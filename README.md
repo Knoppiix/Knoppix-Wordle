@@ -1,4 +1,4 @@
-# Knoppix's Wordle
+# Knoppix's Wordle - French version
 ![image](https://github.com/Knoppiix/Knoppix-Wordle/assets/77052607/df6777c0-2b03-42a6-8562-47e7f739db77)
 
 
