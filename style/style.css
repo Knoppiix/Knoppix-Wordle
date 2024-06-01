@@ -1,27 +1,26 @@
 @font-face {
- font-family: "Adelia";
- src: url("../font/ADELIA.otf");
+	font-family: "Adelia";
+	src: url("../font/ADELIA.otf");
 }
 @font-face {
- font-family: "Olive";
- src: url("../font/Olive Days.ttf");
+	font-family: "Olive";
+	src: url("../font/Olive Days.ttf");
 }
 @font-face {
- font-family: "Small Print";
- src: url("../font/Small Print.ttf");
+	font-family: "Small Print";
+	src: url("../font/Small Print.ttf");
 }
 @keyframes appear {
-  from {opacity: 0;}
-  to {opacity: 1;}
+	from {opacity: 0;}
+	to {opacity: 1;}
 }
 @keyframes rotate {
-		from {
-			transform: rotate(0deg);
-		}
-
-		to {
-			transform: rotate(359deg);
-		}
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(359deg);
+	}
 }
 
 *{
@@ -69,10 +68,10 @@ header > h1{
 	background-color: #E4CDA7;
 	border-radius: 20vh;	
 	cursor: pointer;  
-  display: grid;
-  place-content: center;
-  height: 2.5em;
-  width:2.5em;
+	display: grid;
+	place-content: center;
+	height: 2.5em;
+	width:2.5em;
 }
 
 #help > p{
@@ -168,8 +167,8 @@ header > h1{
 	animation-duration: 1.5s;
 	display: flex;
 	flex-direction: column;
-  align-items: center; 
-  z-index: 0;
+	align-items: center; 
+	z-index: 0;
 }
 
 #popup > .cross{
@@ -183,13 +182,13 @@ header > h1{
 	width: 8%;
 	margin-top: 1%;
 	transition-duration: 0.8s;
-  transition-property: transform;
-  cursor: pointer;
+	transition-property: transform;
+	cursor: pointer;
 }
 
 #popup > .cross:hover{
 	transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
 }
 
 #popup > h1{
@@ -234,7 +233,7 @@ header > h1{
 	left: 0;
 	right: 0;
 	margin-left: auto; 
-  margin-right: auto; 
+	margin-right: auto; 
 	font-family: Arial;
 	max-width: 15vh;
 	padding: 0.5vh 5vh;
@@ -323,56 +322,55 @@ header > h1{
 }
 
 .sec-loading {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  animation: fadeInAnimation ease 0.6s;
-  background-color: #E4CDA7;
-
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 1;
+	animation: fadeInAnimation ease 0.6s;
+	background-color: #E4CDA7;
 }
 
 .sec-loading .one {
-  height: 80px;
-  width: 80px;
-  border: var(--border-width) solid #8E806A;
-  transform: rotate(45deg);
-  border-radius: 0 50% 50% 50%;
-  position: relative;
-  animation: move 0.5s linear infinite alternate-reverse;
+	height: 80px;
+	width: 80px;
+	border: var(--border-width) solid #8E806A;
+	transform: rotate(45deg);
+	border-radius: 0 50% 50% 50%;
+	position: relative;
+	animation: move 0.5s linear infinite alternate-reverse;
 }
 .sec-loading .one::before {
-  content: "";
-  position: absolute;
-  height: 55%;
-  width: 55%;
-  border-radius: 50%;
-  border: var(--border-width) solid transparent;
-  border-top-color: white;
-  border-bottom-color: white;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: rotate 1s linear infinite;
+	content: "";
+	position: absolute;
+	height: 55%;
+	width: 55%;
+	border-radius: 50%;
+	border: var(--border-width) solid transparent;
+	border-top-color: white;
+	border-bottom-color: white;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	animation: rotate 1s linear infinite;
 }
 
 @keyframes rotate {
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
+	to {
+	transform: translate(-50%, -50%) rotate(360deg);
+	}
 }
 @keyframes move {
-  to {
-    transform: translateY(15px) rotate(45deg);
-  }
+	to {
+	transform: translateY(15px) rotate(45deg);
+	}
 }
 @keyframes fadeInAnimation {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-     }
+	0% {
+	opacity: 0;
+	}
+	100% {
+	opacity: 1;
+	}
 }
