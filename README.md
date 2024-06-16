@@ -1,6 +1,6 @@
 # Knoppix's Wordle - French version
 
-Welcome to my version of the popular game Wordle, built using Vue.js! This project replicates the word puzzle game "Wordle", which I made my own version.
+Welcome to my version of the popular game Wordle, built using Vue.js! This project replicates the word puzzle game "Wordle" made by Josh Wardle, which I made my own version.
 In Knoppix's Wordle, you have to guess a secret eight-letter word within eight tries. 
 Each guess provides feedback indicating how many letters are correct and in the correct position, and how many letters are correct but in the wrong position.
 ![image](https://github.com/Knoppiix/Knoppix-Wordle/assets/77052607/df6777c0-2b03-42a6-8562-47e7f739db77)
