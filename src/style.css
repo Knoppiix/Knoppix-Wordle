@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+    font-family: 'Olive';
+    src: url("font/Olive Days.ttf");
+    font-weight: lighter;
+}
+
+@font-face {
+    font-family: 'Adelia';
+    src: url("font/ADELIA.ttf");
+}
