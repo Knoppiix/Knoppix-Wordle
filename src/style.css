@@ -13,3 +13,11 @@
     font-family: 'Adelia';
     src: url("font/ADELIA.ttf");
 }
+
+.badLetter {
+    background-color: crimson;
+}
+
+.goodLeter{
+    background-color: royalblue;
+}

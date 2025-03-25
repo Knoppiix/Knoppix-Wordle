@@ -2,20 +2,20 @@
 <splash-screen v-if="showSplashScreen"></splash-screen>
 
 <header v-if="!showSplashScreen" class="flex flex-row justify-center items-center">
-	<div class="grid grid-cols-[minmax(4rem,17%)_minmax(16rem,66%)_minmax(4rem,17%)] bg-[#CCD5AE] rounded-3xl min-w-96 w-5/12 m-3 border-[#E9EDC9] border-4 outline-title">
-		<h1 class="text-[#E9EDC9] font-Cartoon font-bold col-start-2 text-center text-3xl p-3 text-stroke-3">Knoppix's Wordle</h1>
+	<div class="grid grid-cols-[minmax(4rem,17%)_minmax(16rem,66%)_minmax(4rem,17%)] bg-[#8E806A] rounded-3xl min-w-96 w-5/12 m-3 border-almond-500 border-4 outline-title">
+		<h1 class="text-[#454747] font-Cartoon font-bold col-start-2 text-center text-3xl p-3 text-stroke-3">Knoppix's Wordle</h1>
   		<span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span>
 	</div>
 </header>
 
-<div class="w-1/3" v-if="!showSplashScreen">				
-  <div class="letterFrame" v-if="badLetters.length != 0">		
+<div class="w-2/12 inline-flex" v-if="!showSplashScreen">				
+  <div class="letterFrame" v-if="this.badLetters.length != 0">
     <h1>bad letters</h1>
     <letter-tile v-for="letter in badLetters" class="tile badLetter" :value="letter" disabled></letter-tile>				
   </div>
 </div>
 
-<div class="w-2/4 flex justify-evenly" v-if="!showSplashScreen">
+<div class="w-5/12 inline-flex flex-col items-center absolute left-[29.2%] mt-20" v-if="!showSplashScreen">
   <help-screen v-if='this.help == true'>
     <template v-slot:good>
       <letter-tile class="tile goodLetter darker" disabled></letter-tile>
@@ -27,11 +27,11 @@
       <letter-tile class="tile badLetter darker" disabled></letter-tile>
     </template>				
   </help-screen>
-  <div class="p-3">
+  <div class="p-2 inline-flex justify-around w-full">
     <letter-tile v-for="i in chosenWord.length" class="tile revealtile" :value="revealWord[i-1]" disabled></letter-tile>
   </div>
 
-  <div class='p-2' v-for="lines in retries" :key="lines" v-show="win == null || closed == true">
+  <div class='p-2 inline-flex justify-around w-full' v-for="lines in retries" :key="lines" v-show="win == null || closed == true">
     <letter-tile v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown="wordConfirm($event, index, lines)" :class="'tile '+ getState(lines, index)" :disabled="getState(lines,index) !== null || win != null"></letter-tile>	
   </div>	
   <end-screen v-if='win!=null && closed == false'></end-screen>							
@@ -83,10 +83,10 @@ export default{
 				const rightNow = new Date();
 				const res = rightNow.toISOString().slice(0,10).replace(/-/g,"");
 				const rng = new seedrandom(res).quick()
-				this.words=functions.readFile('./src/assets/wordleList.json').split('\n')     
+				this.words = functions.readFile('./src/assets/wordleList.json').split('\n')     
 				this.checkList = functions.readFile('./src/assets/checkList.json').split('\n') 
 				const random = Math.round(rng * this.words.length-1)
-				console.log(this.checkList)
+				//console.log(this.checkList)
 				setTimeout(() => {					
 					resolve(this.words[random].replace(/(\r\n|\n|\r)/gm, ""))
 				}, 1000); // Simulate a 1-second delay
@@ -290,7 +290,8 @@ export default{
 					}
 			}
 		})
-		document.getElementsByTagName("input")[0].focus() //On focus sur la premiere tuile		
+		const firstTile = document.getElementsByClassName("tile null")[0]
+		firstTile.focus() //On focus sur la premiere tuile		
 	}	
 }
 

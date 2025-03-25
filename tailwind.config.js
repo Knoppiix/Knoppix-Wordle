@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        appear: {
+          '0%': {opacity: '0%'},
+          '100%': {opacity: '100%'}
+        }
+      },
+      animation: {
+        'appear-in': 'appear .3s ease-in-out'
+      }
+    },
     colors: {
      'almond': { DEFAULT: '#ede0d4', 100: '#3f2c1a', 200: '#7f5935', 300: '#b88555', 400: '#d2b295', 500: '#ede0d4', 600: '#f1e6dc', 700: '#f4ece5', 800: '#f8f3ee', 900: '#fbf9f6' }, 
      'dun': { DEFAULT: '#e6ccb2', 100: '#3e2914', 200: '#7b5228', 300: '#b97a3c', 400: '#d2a374', 500: '#e6ccb2', 600: '#ebd6c1', 700: '#f0e0d1', 800: '#f5ebe0', 900: '#faf5f0' }, 

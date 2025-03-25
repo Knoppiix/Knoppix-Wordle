@@ -1,5 +1,5 @@
 <template>
-	<div id='popup'>
+	<div class="absolute border-almond-100 bg-almond-300 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 animate-appear-in">
 		<span class="cross" @click="this.root.help = false">×</span>
 		<h1>How to play</h1>					
 		<ul id='rules'> 
