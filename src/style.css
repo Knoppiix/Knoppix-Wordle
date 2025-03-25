@@ -14,6 +14,51 @@
     src: url("font/ADELIA.ttf");
 }
 
+@keyframes grid-glide-anim {
+
+    from {
+        inset-block-start: 0;
+        inset-inline-start: 0;
+
+    }
+
+    to {
+        inset-block-start: -120px;
+        inset-inline-start: -120px;
+    }
+
+  }
+  
+  @keyframes row-thickens {
+      0%, 90%{
+          block-size: 7px;					
+      }
+
+      95%{
+          block-size: 12px;
+      }
+
+      100%{
+          block-size: 7px;
+      }
+
+  }
+
+  @keyframes col-thickens {
+      0%, 90%{
+          inline-size: 7px;					
+      }
+
+      95%{
+          inline-size: 12px;
+      }
+
+      100%{
+          inline-size: 7px;
+      }
+
+  }
+
 .badLetter {
     background-color: crimson;
 }

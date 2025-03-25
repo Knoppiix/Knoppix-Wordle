@@ -1,6 +1,10 @@
 <template>
 <splash-screen v-if="showSplashScreen"></splash-screen>
 
+<div class="m-0 p-0 grid overflow-hidden h-full w-full gap-0 absolute">
+	<div class="relative m-0 p-0 before:content-[''] after:content-[''] before:absolute after:absolute before:bg-[#000] after:bg-[#000] before:h-full before:w-1 after:w-full after:h-1" v-for="n in Array.from({length: 30})" :key="n"></div>			
+</div>
+
 <header v-if="!showSplashScreen" class="flex flex-row justify-center items-center">
 	<div class="grid grid-cols-[minmax(4rem,17%)_minmax(16rem,66%)_minmax(4rem,17%)] bg-[#8E806A] rounded-3xl min-w-96 w-5/12 m-3 border-almond-500 border-4 outline-title">
 		<h1 class="text-[#454747] font-Cartoon font-bold col-start-2 text-center text-3xl p-3 text-stroke-3">Knoppix's Wordle</h1>
