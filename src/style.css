@@ -1,18 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-@font-face {
-    font-family: 'Olive';
-    src: url("font/Olive Days.ttf");
-    font-weight: lighter;
-}
-
-@font-face {
-    font-family: 'Adelia';
-    src: url("font/ADELIA.ttf");
-}
 
 @keyframes grid-glide-anim {
 
@@ -31,38 +21,48 @@
   
   @keyframes row-thickens {
       0%, 90%{
-          block-size: 7px;					
+          block-size: 1px;					
       }
 
       95%{
-          block-size: 12px;
+          block-size: 4px;
       }
 
       100%{
-          block-size: 7px;
+          block-size: 1px;
       }
 
   }
 
   @keyframes col-thickens {
       0%, 90%{
-          inline-size: 7px;					
+          inline-size: 1px;					
       }
 
       95%{
-          inline-size: 12px;
+          inline-size: 4px;
       }
 
       100%{
-          inline-size: 7px;
+          inline-size: 1px;
       }
 
   }
 
-.badLetter {
-    background-color: crimson;
-}
+  .gridAnimate::after {
+    /* ROWS */
+    inline-size: 100vw;
+    block-size: 1px;
+    animation: grid-glide-anim 2s linear 0s infinite, row-thickens 7s ease-in-out 0s infinite;  
+  }
+  .gridAnimate:before {
+    /* COLUMNS */
+    inline-size: 1px;
+    block-size: 100vh;
+    inset-inline-start: 0em;
+    animation: grid-glide-anim 2s linear 0s infinite, col-thickens 7s ease-in-out 0s infinite;
+  }
 
-.goodLeter{
-    background-color: royalblue;
+  .text-shadow{
+    text-shadow: 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 5px 5px 0 #adf8db;  
 }

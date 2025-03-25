@@ -1,15 +1,13 @@
 <template>
 <splash-screen v-if="showSplashScreen"></splash-screen>
 
-<div class="m-0 p-0 grid overflow-hidden h-full w-full gap-0 absolute">
-	<div class="relative m-0 p-0 before:content-[''] after:content-[''] before:absolute after:absolute before:bg-[#000] after:bg-[#000] before:h-full before:w-1 after:w-full after:h-1" v-for="n in Array.from({length: 30})" :key="n"></div>			
+<div class="m-0 p-0 grid overflow-hidden h-full w-full gap-0 absolute -z-10" :style="this.gridTemplateStyle">
+	<div class="relative m-0 p-0 before:content-[''] after:content-[''] before:absolute after:absolute before:bg-[#000] after:bg-[#000] gridAnimate" v-for="square in Array.from({length: this.nbCols*this.nbRows})"></div>			
 </div>
 
-<header v-if="!showSplashScreen" class="flex flex-row justify-center items-center">
-	<div class="grid grid-cols-[minmax(4rem,17%)_minmax(16rem,66%)_minmax(4rem,17%)] bg-[#8E806A] rounded-3xl min-w-96 w-5/12 m-3 border-almond-500 border-4 outline-title">
-		<h1 class="text-[#454747] font-Cartoon font-bold col-start-2 text-center text-3xl p-3 text-stroke-3">Knoppix's Wordle</h1>
-  		<span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span>
-	</div>
+<header v-if="!showSplashScreen" class="flex flex-row justify-center items-center">		
+	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-3 text-shadow tracking-wider">KNORDLE</h1>
+  	<span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span>
 </header>
 
 <div class="w-2/12 inline-flex" v-if="!showSplashScreen">				
@@ -19,7 +17,7 @@
   </div>
 </div>
 
-<div class="w-5/12 inline-flex flex-col items-center absolute left-[29.2%] mt-20" v-if="!showSplashScreen">
+<div class="w-5/12 inline-flex flex-col items-center absolute left-[29.2%]" v-if="!showSplashScreen">
   <help-screen v-if='this.help == true'>
     <template v-slot:good>
       <letter-tile class="tile goodLetter darker" disabled></letter-tile>
@@ -31,12 +29,12 @@
       <letter-tile class="tile badLetter darker" disabled></letter-tile>
     </template>				
   </help-screen>
-  <div class="p-2 inline-flex justify-around w-full">
+  <div class="p-2 inline-flex justify-evenly w-full">
     <letter-tile v-for="i in chosenWord.length" class="tile revealtile" :value="revealWord[i-1]" disabled></letter-tile>
   </div>
 
-  <div class='p-2 inline-flex justify-around w-full' v-for="lines in retries" :key="lines" v-show="win == null || closed == true">
-    <letter-tile v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown="wordConfirm($event, index, lines)" :class="'tile '+ getState(lines, index)" :disabled="getState(lines,index) !== null || win != null"></letter-tile>	
+  <div class='p-2 inline-flex justify-evenly w-full' v-for="lines in retries" :key="lines" v-show="win == null || closed == true">
+    <letter-tile v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown="wordConfirm($event, index, lines)" :class="getState(lines, index)" :disabled="getState(lines,index) !== null || win != null"></letter-tile>	
   </div>	
   <end-screen v-if='win!=null && closed == false'></end-screen>							
 </div>
@@ -50,7 +48,7 @@ import splashScreen from './splashScreen.vue'
 import tile from './tile.vue'
 import functions from '../functions'
 import seedrandom from 'seedrandom'
-
+import { ref } from 'vue'
 export default{
     name: 'game',
     components: {
@@ -78,6 +76,10 @@ export default{
 			closed:false,	
 			help:false,
 			showSplashScreen: true,
+			squareSize: 120,
+			nbCols: 0,
+		    nbRows: 0,
+			gridTemplateStyle: '',
 		}
 	},
 
@@ -228,7 +230,12 @@ export default{
 			if(event.key === "Enter"){
 				this.checkLine(index,line,event.target,true)
 			}
-		}
+		},
+		drawGrid(event){			
+			this.nbCols = Math.round(window.innerWidth / this.squareSize) + 1;
+			this.nbRows = Math.round(window.innerHeight / this.squareSize) + 1;			
+			this.gridTemplateStyle = `grid-template-columns: repeat(${this.nbCols}, ${this.squareSize}px); grid-template-rows: repeat(${this.nbRows},${this.squareSize}px);`;			
+		},
 	},	
 	components: {
 		'letter-tile': tile,
@@ -261,7 +268,7 @@ export default{
 			}else if(this.win == true){
 				this.setCookie("won","True")
 			}			
-		}
+		},
 	},
 	beforeMount(){
 		this.pickWord().then((word) => {
@@ -280,7 +287,6 @@ export default{
 		if(document.cookie.includes("summary")){
 			this.emojiSummary = this.txtToSummary(atob(document.cookie.split("summary")[1].split(";")[0].replace("=","")))
 		}
-
 	},
 	mounted(){		
 		if(document.cookie.includes("input")){
@@ -294,9 +300,11 @@ export default{
 					}
 			}
 		})
-		const firstTile = document.getElementsByClassName("tile null")[0]
-		firstTile.focus() //On focus sur la premiere tuile		
-	}	
+		const firstTile = document.getElementsByClassName("tile null")[0]	
+		window.addEventListener('resize', this.drawGrid);
+		this.drawGrid();	
+	},
+	
 }
 
 </script>
