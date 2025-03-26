@@ -13,19 +13,19 @@
     }
 
     to {
-        inset-block-start: -120px;
-        inset-inline-start: -120px;
+        inset-block-start: -100px;
+        inset-inline-start: -100px;
     }
 
   }
   
-  @keyframes row-thickens {
+  /* @keyframes row-thickens {
       0%, 90%{
           block-size: 1px;					
       }
 
       95%{
-          block-size: 4px;
+          block-size: 3px;
       }
 
       100%{
@@ -40,14 +40,14 @@
       }
 
       95%{
-          inline-size: 4px;
+          inline-size: 3px;
       }
 
       100%{
           inline-size: 1px;
       }
 
-  }
+  } */
 
   .gridAnimate::after {
     /* ROWS */

@@ -6,8 +6,8 @@
 </div>
 
 <header v-if="!showSplashScreen" class="flex flex-row justify-center items-center">		
-	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-3 text-shadow tracking-wider">KNORDLE</h1>
-  	<span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span>
+	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-3 text-shadow tracking-widest">KNORDLE</h1>
+  	<!-- <span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span> -->
 </header>
 
 <div class="w-2/12 inline-flex" v-if="!showSplashScreen">				
@@ -17,7 +17,7 @@
   </div>
 </div>
 
-<div class="w-5/12 inline-flex flex-col items-center absolute left-[29.2%]" v-if="!showSplashScreen">
+<div class="w-5/12 inline-flex flex-col items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" v-if="!showSplashScreen">
   <help-screen v-if='this.help == true'>
     <template v-slot:good>
       <letter-tile class="tile goodLetter darker" disabled></letter-tile>
@@ -39,6 +39,11 @@
   <end-screen v-if='win!=null && closed == false'></end-screen>							
 </div>
 
+<div class="w-96 h-96 bg-mauve-700 rounded-full absolute left-10 -top-52 -z-30 shadow-[5px_5px_0px_0px_#fffdc2]">
+	<div class="w-64 h-64 bg-seasalt rounded-full -z-20 relative left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 shadow-[inset_5px_5px_0px_0px_#fffdc2]"></div>
+</div>
+<div class="w-96 h-96 bg-cream rounded-full absolute -bottom-32 -left-32 -z-20"></div>
+
 </template>
 
 <script>
@@ -48,7 +53,6 @@ import splashScreen from './splashScreen.vue'
 import tile from './tile.vue'
 import functions from '../functions'
 import seedrandom from 'seedrandom'
-import { ref } from 'vue'
 export default{
     name: 'game',
     components: {
@@ -71,12 +75,12 @@ export default{
 			comparaison: [],
 			chosenWord: "",
 			lineNb: 0,
-			retries: 8,
+			retries: 6,
 			win: null,
 			closed:false,	
 			help:false,
 			showSplashScreen: true,
-			squareSize: 120,
+			squareSize: 100,
 			nbCols: 0,
 		    nbRows: 0,
 			gridTemplateStyle: '',
