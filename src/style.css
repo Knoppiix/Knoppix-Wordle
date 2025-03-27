@@ -19,13 +19,13 @@
 
   }
   
-  /* @keyframes row-thickens {
+  @keyframes row-thickens {
       0%, 90%{
           block-size: 1px;					
       }
 
       95%{
-          block-size: 3px;
+          block-size: 4px;
       }
 
       100%{
@@ -40,27 +40,27 @@
       }
 
       95%{
-          inline-size: 3px;
+          inline-size: 4px;
       }
 
       100%{
           inline-size: 1px;
       }
 
-  } */
+  }
 
   .gridAnimate::after {
     /* ROWS */
     inline-size: 100vw;
     block-size: 1px;
-    animation: grid-glide-anim 2s linear 0s infinite, row-thickens 7s ease-in-out 0s infinite;  
+    animation: grid-glide-anim 4s linear 0s infinite, row-thickens 12s ease-in-out 0s infinite;  
   }
   .gridAnimate:before {
     /* COLUMNS */
     inline-size: 1px;
     block-size: 100vh;
     inset-inline-start: 0em;
-    animation: grid-glide-anim 2s linear 0s infinite, col-thickens 7s ease-in-out 0s infinite;
+    animation: grid-glide-anim 2s linear 0s infinite, col-thickens 12s ease-in-out 0s infinite;
   }
 
   .text-shadow{

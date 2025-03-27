@@ -6,43 +6,55 @@
 </div>
 
 <header v-if="!showSplashScreen" class="flex flex-row justify-center items-center">		
-	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-3 text-shadow tracking-widest">KNORDLE</h1>
+	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-10 text-shadow tracking-widest">KNORDLE</h1>
   	<!-- <span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span> -->
 </header>
 
-<div class="w-2/12 inline-flex" v-if="!showSplashScreen">				
-  <div class="letterFrame" v-if="this.badLetters.length != 0">
-    <h1>bad letters</h1>
-    <letter-tile v-for="letter in badLetters" class="tile badLetter" :value="letter" disabled></letter-tile>				
-  </div>
-</div>
+<main class="grid grid-cols-3">
 
-<div class="w-5/12 inline-flex flex-col items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" v-if="!showSplashScreen">
-  <help-screen v-if='this.help == true'>
-    <template v-slot:good>
-      <letter-tile class="tile goodLetter darker" disabled></letter-tile>
-    </template>
-    <template v-slot:almost>
-      <letter-tile class="tile wrgPlaceLetter darker" disabled></letter-tile>
-    </template>
-    <template v-slot:bad>
-      <letter-tile class="tile badLetter darker" disabled></letter-tile>
-    </template>				
-  </help-screen>
-  <div class="p-2 inline-flex justify-evenly w-full">
-    <letter-tile v-for="i in chosenWord.length" class="tile revealtile" :value="revealWord[i-1]" disabled></letter-tile>
-  </div>
+	<div class="inline-grid items-start" v-if="!showSplashScreen">				
+		<div class="letterFrame" v-if="this.badLetters.length != 0">
+			<h1>bad letters</h1>
+			<letter-tile v-for="letter in badLetters" class="tile badLetter" :value="letter" disabled></letter-tile>				
+		</div>
+	</div>
 
-  <div class='p-2 inline-flex justify-evenly w-full' v-for="lines in retries" :key="lines" v-show="win == null || closed == true">
-    <letter-tile v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown="wordConfirm($event, index, lines)" :class="getState(lines, index)" :disabled="getState(lines,index) !== null || win != null"></letter-tile>	
-  </div>	
-  <end-screen v-if='win!=null && closed == false'></end-screen>							
-</div>
+	<div class="inline-grid flex-col items-center" v-if="!showSplashScreen">
+		<help-screen v-if='this.help == true'>
+			<template v-slot:good>
+			<letter-tile class="tile goodLetter darker" disabled></letter-tile>
+			</template>
+			<template v-slot:almost>
+			<letter-tile class="tile wrgPlaceLetter darker" disabled></letter-tile>
+			</template>
+			<template v-slot:bad>
+			<letter-tile class="tile badLetter darker" disabled></letter-tile>
+			</template>				
+		</help-screen>
 
+		<!-- TILE LINE FOR WORD REVEAL -->
+		<div class="p-2 inline-flex justify-evenly w-full">
+			<!-- <letter-tile v-for="i in chosenWord.length" class="tile revealtile" :value="revealWord[i-1]" disabled></letter-tile> -->
+		</div>
+
+		<!-- GAME TILES -->
+		<div class='p-5 inline-flex justify-evenly w-full' v-for="lines in retries" :key="lines" v-show="win == null || closed == true">
+			<letter-tile :class="getRotationClass(lines, index)" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown="wordConfirm($event, index, lines)" :disabled="getState(lines,index) !== null || win != null"></letter-tile>	
+		</div>	
+		<end-screen v-if='win!=null && closed == false'></end-screen>							
+	</div>
+</main>
+
+<!-- DONUT -->
 <div class="w-96 h-96 bg-mauve-700 rounded-full absolute left-10 -top-52 -z-30 shadow-[5px_5px_0px_0px_#fffdc2]">
 	<div class="w-64 h-64 bg-seasalt rounded-full -z-20 relative left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 shadow-[inset_5px_5px_0px_0px_#fffdc2]"></div>
 </div>
-<div class="w-96 h-96 bg-cream rounded-full absolute -bottom-32 -left-32 -z-20"></div>
+
+<!-- CIRCLE -->
+<div class="w-96 h-96 bg-cream rounded-full absolute -bottom-28 -left-28 -z-20"></div>
+
+<!-- TRIANGLE -->
+<div class="w-0 h-0 absolute right-32 top-1/2 -translate-y-1/2 border-[20rem] border-[transparent_transparent_#adf8db_transparent] scale-x-50 scale-y-150 -rotate-90 -z-20"></div>
 
 </template>
 
@@ -240,6 +252,13 @@ export default{
 			this.nbRows = Math.round(window.innerHeight / this.squareSize) + 1;			
 			this.gridTemplateStyle = `grid-template-columns: repeat(${this.nbCols}, ${this.squareSize}px); grid-template-rows: repeat(${this.nbRows},${this.squareSize}px);`;			
 		},
+		getRotationClass(line, index) {
+			if (line % 2 === 0) {
+			return index % 2 === 0 ? 'rotate-[9deg]' : '-rotate-[9deg]';
+			} else {
+			return index % 2 === 0 ? '-rotate-[9deg]' : 'rotate-[9deg]';
+			}
+  		}
 	},	
 	components: {
 		'letter-tile': tile,
@@ -310,5 +329,4 @@ export default{
 	},
 	
 }
-
 </script>
