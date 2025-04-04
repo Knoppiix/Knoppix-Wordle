@@ -14,6 +14,7 @@ export default {
     },
       animation: {
         'appear-in': 'appear .3s ease-in-out',
+        'bounce-once': 'bounceOnce .7s cubic-bezier(0, 0, 0.65, 1.18) 1',
       },
     },
     colors: {

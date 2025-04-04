@@ -1,25 +1,25 @@
 <template>
-<splash-screen v-if="showSplashScreen"></splash-screen>
-
 <div class="m-0 p-0 grid overflow-hidden h-full w-full gap-0 absolute -z-10" :style="this.gridTemplateStyle">
 	<div class="relative m-0 p-0 before:content-[''] after:content-[''] before:absolute after:absolute before:bg-[#000] after:bg-[#000] gridAnimate" v-for="square in Array.from({length: this.nbCols*this.nbRows})"></div>			
 </div>
 
-<header v-if="!showSplashScreen" class="flex flex-row justify-center items-center">		
-	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-10 text-shadow tracking-widest">KNORDLE</h1>
+<header  class="flex flex-row justify-center items-center">		
+	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-10 text-shadow tracking-wider">KNORDLE</h1>
   	<!-- <span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span> -->
 </header>
 
 <main class="grid grid-cols-3">
 
-	<div class="inline-grid items-start" v-if="!showSplashScreen">				
-		<div class="letterFrame" v-if="this.badLetters.length != 0">
-			<h1>bad letters</h1>
-			<letter-tile v-for="letter in badLetters" class="tile badLetter" :value="letter" disabled></letter-tile>				
+	<div class="inline-grid items-start p-7">				
+		<div class="ml-4 w-96 h-96 border-[1px] border-b-4 border-jet-500 bg-cream rounded-2xl flex flex-col pt-8 font-Patua text-3xl shadow-[0px_5px_0px_0px_#35302C]">				
+			<div class="self-center"><span class="p-2 h-min inline-block -rotate-[9deg] border-2 border-jet bg-mauve-300 rounded-lg text-seasalt">bad</span> letters</div>			
+			<div class="dots-filled grow flex flex-col">
+				<span class="p-4 absolute line-through max-w-96">{{ badLetters.join(' ') }}</span>				
+			</div>						
 		</div>
 	</div>
 
-	<div class="inline-grid flex-col items-center" v-if="!showSplashScreen">
+	<div class="inline-grid flex-col items-center" >
 		<help-screen v-if='this.help == true'>
 			<template v-slot:good>
 			<letter-tile class="tile goodLetter darker" disabled></letter-tile>
@@ -32,14 +32,9 @@
 			</template>				
 		</help-screen>
 
-		<!-- TILE LINE FOR WORD REVEAL -->
-		<div class="p-2 inline-flex justify-evenly w-full">
-			<!-- <letter-tile v-for="i in chosenWord.length" class="tile revealtile" :value="revealWord[i-1]" disabled></letter-tile> -->
-		</div>
-
 		<!-- GAME TILES -->
-		<div class='p-5 inline-flex justify-evenly w-full' v-for="lines in retries" :key="lines" v-show="win == null || closed == true">
-			<letter-tile :class="getRotationClass(lines, index)" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown="wordConfirm($event, index, lines)" :disabled="getState(lines,index) !== null || win != null"></letter-tile>	
+		<div class='p-5 inline-flex justify-evenly w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
+			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1] : ''"></letter-tile>				
 		</div>	
 		<end-screen v-if='win!=null && closed == false'></end-screen>							
 	</div>
@@ -49,10 +44,8 @@
 <div class="w-96 h-96 bg-mauve-700 rounded-full absolute left-10 -top-52 -z-30 shadow-[5px_5px_0px_0px_#fffdc2]">
 	<div class="w-64 h-64 bg-seasalt rounded-full -z-20 relative left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 shadow-[inset_5px_5px_0px_0px_#fffdc2]"></div>
 </div>
-
 <!-- CIRCLE -->
 <div class="w-96 h-96 bg-cream rounded-full absolute -bottom-28 -left-28 -z-20"></div>
-
 <!-- TRIANGLE -->
 <div class="w-0 h-0 absolute right-32 top-1/2 -translate-y-1/2 border-[20rem] border-[transparent_transparent_#adf8db_transparent] scale-x-50 scale-y-150 -rotate-90 -z-20"></div>
 
@@ -100,39 +93,31 @@ export default{
 	},
 
 	methods: {
-		pickWord: function(){
-			return new Promise((resolve) => {
-				const rightNow = new Date();
-				const res = rightNow.toISOString().slice(0,10).replace(/-/g,"");
-				const rng = new seedrandom(res).quick()
-				this.words = functions.readFile('./src/assets/wordleList.json').split('\n')     
-				this.checkList = functions.readFile('./src/assets/checkList.json').split('\n') 
-				const random = Math.round(rng * this.words.length-1)
-				//console.log(this.checkList)
-				setTimeout(() => {					
-					resolve(this.words[random].replace(/(\r\n|\n|\r)/gm, ""))
-				}, 1000); // Simulate a 1-second delay
-				
-				//console.log(this.chosenWord)
-			})
+		pickWord: async function(){			
+			const rightNow = new Date();
+			const res = rightNow.toISOString().slice(0,10).replace(/-/g,"");
+			const rng = new seedrandom(res).quick()
+			this.words = await functions.readFile('./src/assets/wordleList.json')   
+			this.checkList = await functions.readFile('./src/assets/checkList.json')				
+			const random = Math.round(rng * this.words.length-1)
+			return this.words[random]			
 		},
-		checkLine: function(index, line, element,check, event){
-			functions.nextFocus(element)
+		checkLine: async function(index, line, element,check, event){
+			functions.nextFocus(event, element)
 			const lineIndexStart = (line-1)*this.chosenWord.length	
 			this.currentWord[lineIndexStart+index-1] = element.value   
 			const userInput = this.currentWord.slice(lineIndexStart,lineIndexStart+this.chosenWord.length).join("")
-			//console.log(this.currentWord)			
-			//Sera egal à l'index de la première tile de la ligne actuelle (0 pour 1ere ligne, [longueur du mot] pour 2eme ligne...)
-			if(userInput.length == this.chosenWord.length && this.checkList.includes(userInput) && check==true){ //Si toutes les tiles de la lignes actuelles ont une valeur
+			console.log(this.currentWord)			
+			console.log(userInput.length == this.chosenWord.length,  this.checkList.includes(userInput), check==true)					
+			if(userInput.length == this.chosenWord.length && this.checkList.includes(userInput) && check==true){ // Si toutes les tiles de la lignes actuelles ont une valeur)
 				this.comparaison = this.chosenWord.split('') //Variable qui servira a comparer le mot de l'utilisateur au mot choisi par l'algo
 				this.lineNb++				
-				for(let steps = 0; steps < 2; steps++){ //2 etapes : Premierement on check les bonnes lettres, et deuxiemement on check les lettres mal placees + les mauvaises
-					for(let i = lineIndexStart;  i < lineIndexStart+this.chosenWord.length; i++){ //On demarre une boucle au debut de la ligne actuelle jusqu'à sa fin												
-						//console.log("currentWord : "+this.currentWord[i]+" | chosenWord : "+this.chosenWord[i-lineIndexStart])					
+				for(let steps = 0; steps < 2; steps++){ //2 etapes : Premierement on check les bonnes lettres, et deuxiemement on check les lettres mal placees + les mauvaises					
+					for(let i = lineIndexStart;  i < lineIndexStart+this.chosenWord.length; i++){ //On demarre une boucle au debut de la ligne actuelle jusqu'à sa fin																							
 						switch(steps){
 							case 0: //Check des bonnes lettres 								
 								if(this.currentWord[i] == this.chosenWord[i-lineIndexStart]){ //Si la lettre i de l'user equivaut à la lettre [i - index du debut de la ligne] du mot choisi
-									this.tileState[i] = "bg-[blue]" //bonne lettre
+									this.tileState[i] = "!bg-pastelcyan animate-bounce-once" //bonne lettre
 									this.comparaison[i-lineIndexStart] = " "
 									this.emojiSummary[i] = String.fromCodePoint(128998)
 									this.goodLetters.push(this.currentWord[i])
@@ -147,21 +132,21 @@ export default{
 								break
 							case 1: //Check des lettres mal placees ou mauvaises								 
 									if(this.comparaison.includes(this.currentWord[i])  && this.tileState[i] == null){
-										this.tileState[i] = "bg-dun" //mal placee
+										this.tileState[i] = "!bg-cream animate-bounce-once" //mal placee
 										this.comparaison[i] = " "
 										//this.comparaison = this.comparaison.replace(this.currentWord[i], " ")
 										this.emojiSummary[i] = String.fromCodePoint(128999)								
 									}
 									else if(this.tileState[i] == null){ //Pour ne pas ecraser les bonnes lettres 
-										this.tileState[i] = "bg-[red]" //mauvaise lettre	
+										this.tileState[i] = "!bg-seasalt" //mauvaise lettre	
 										this.emojiSummary[i] = String.fromCodePoint(11035)
 										if(!this.chosenWord.includes(this.currentWord[i]) && !this.badLetters.includes(this.currentWord[i])){											//Si la lettre [i] n'est pas dans le mot choisi ET n'est pas déjà présente dans les lettres mauvaises
 											this.badLetters.push(this.currentWord[i])
 										}
 									}								
 								break
-						}
-					}
+						}							
+					}					
 				}
 
 				console.log(this.emojiSummary)
@@ -222,43 +207,53 @@ export default{
 			}
 			return emojiSum
 		},
-		getState: function(lines, index){ //Fonction utilisee dans le HTML pour reduire la verbosite, retourne la classe d une tuile (bonne lettre, mauvaise..)
+		getState: function(lines, index){ // Fonction utilisee dans le HTML pour reduire la verbosite, retourne la classe d une tuile (bonne lettre, mauvaise..)
 			if(this.tileState[((lines-1)*this.chosenWord.length)+index-1] !== undefined){
 				return this.tileState[((lines-1)*this.chosenWord.length)+index-1]					
 			}
 			return null
 		},
-		setWords: function(words){ //Fonction qui va ecrire les mots retenus dans les tiles depuis les cookies
+		setWords: function(words){ // Fonction qui va ecrire les mots retenus dans les tiles depuis les cookies
 			const tiles = document.getElementsByClassName("tile null")
 			words = words.replaceAll("/","")
 			for(let i=0; i<words.length; i++){
     			tiles[i].value = words[i]
 			}
 		},
-		setCookie(name,value){ //Fonction pour definir un cookie simplement
+		setCookie(name,value){ // Fonction pour definir un cookie simplement
 			const d = new Date();
 			d.setDate(d.getDate()+1)
 			d.setHours(0,0,0)
 			let expires = "expires="+ d.toString()
 			document.cookie = `${name}=${value}; ${expires}; path=/;`
 		},
-		wordConfirm(event, index, line){	//Fonction qui verifie si la touche enfoncee est bien la touche entree		    
+		wordConfirm(event, index, line){	// Fonction qui verifie si la touche enfoncee est bien la touche entree		    
 			if(event.key === "Enter"){
 				this.checkLine(index,line,event.target,true)
 			}
 		},
-		drawGrid(event){			
+		drawGrid(event){	
+				
+			console.log(Date.now(), this.gridTemplateStyle)				
 			this.nbCols = Math.round(window.innerWidth / this.squareSize) + 1;
 			this.nbRows = Math.round(window.innerHeight / this.squareSize) + 1;			
 			this.gridTemplateStyle = `grid-template-columns: repeat(${this.nbCols}, ${this.squareSize}px); grid-template-rows: repeat(${this.nbRows},${this.squareSize}px);`;			
 		},
 		getRotationClass(line, index) {
 			if (line % 2 === 0) {
-			return index % 2 === 0 ? 'rotate-[9deg]' : '-rotate-[9deg]';
+			return index % 2 === 0 ? 'rotate-[7deg]' : '-rotate-[7deg]';
 			} else {
-			return index % 2 === 0 ? '-rotate-[9deg]' : 'rotate-[9deg]';
+			return index % 2 === 0 ? '-rotate-[7deg]' : 'rotate-[7deg]';
 			}
-  		}
+  		},
+		eraseTile(event){		
+			if(!event.target.value){
+				const previousSibling = event.target.previousSibling;
+				if (previousSibling.tagName == "INPUT"){
+					previousSibling.focus()
+				} 
+			}
+		}
 	},	
 	components: {
 		'letter-tile': tile,
@@ -278,7 +273,6 @@ export default{
 					y++
 				}
 			}
-			console.log(this.emojiSummary)	
 			const d = new Date();
 			d.setDate(d.getDate()+1)
 			d.setHours(0,0,0)
@@ -293,12 +287,7 @@ export default{
 			}			
 		},
 	},
-	beforeMount(){
-		this.pickWord().then((word) => {
-			this.chosenWord = word
-	    	this.showSplashScreen = false
-	    });
-
+	beforeMount(){		
 		if(document.cookie.includes("won")){
 			if(document.cookie.split("won")[1].includes("True")){
 				this.win = true
@@ -309,23 +298,20 @@ export default{
 		}
 		if(document.cookie.includes("summary")){
 			this.emojiSummary = this.txtToSummary(atob(document.cookie.split("summary")[1].split(";")[0].replace("=","")))
-		}
+		}		
+		window.addEventListener('resize', this.drawGrid);
+		this.drawGrid();
 	},
 	mounted(){		
+		// SELECTION DU MOT ALEATOIRE
+		this.pickWord().then((word) => {
+			this.chosenWord = word
+	    });
+
+		//
 		if(document.cookie.includes("input")){
 			this.setWords(atob(document.cookie.split("input")[1].split(';')[0].replace('=','')))
-		}
-		window.addEventListener('keydown',function (e) { 			
-			if (e.key == "Backspace" && e.srcElement.className.includes("tile") && e.srcElement.value == ""){ //Si on appuie sur effacer..
-					if(e.srcElement.previousSibling.tagName == "INPUT"){
-						e.srcElement.previousSibling.focus();
-						e.srcElement.previousSibling.value = "";
-					}
-			}
-		})
-		const firstTile = document.getElementsByClassName("tile null")[0]	
-		window.addEventListener('resize', this.drawGrid);
-		this.drawGrid();	
+		}		
 	},
 	
 }

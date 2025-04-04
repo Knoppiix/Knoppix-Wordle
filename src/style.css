@@ -19,7 +19,7 @@
 
   }
   
-  @keyframes row-thickens {
+  /* @keyframes row-thickens {
       0%, 90%{
           block-size: 1px;					
       }
@@ -47,22 +47,59 @@
           inline-size: 1px;
       }
 
-  }
+  } */
 
-  .gridAnimate::after {
+@keyframes glideAppear {
+    from {
+        transform: translateY(-10%);
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+    
+}
+
+@keyframes bounceOnce {
+    0%, 100% {
+        transform: none;
+    }
+    50% {
+        transform: translateY(-25%);
+    }
+  }
+  
+
+.gridAnimate::after {
     /* ROWS */
     inline-size: 100vw;
     block-size: 1px;
     animation: grid-glide-anim 4s linear 0s infinite, row-thickens 12s ease-in-out 0s infinite;  
-  }
-  .gridAnimate:before {
+}
+.gridAnimate:before {
     /* COLUMNS */
     inline-size: 1px;
     block-size: 100vh;
     inset-inline-start: 0em;
-    animation: grid-glide-anim 2s linear 0s infinite, col-thickens 12s ease-in-out 0s infinite;
-  }
+    animation: grid-glide-anim 4s linear 0s infinite, col-thickens 12s ease-in-out 0s infinite;
+}
 
-  .text-shadow{
+.text-shadow{
     text-shadow: 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black, 5px 5px 0 #adf8db;  
+}
+
+.dots-filled::after{
+    content: '';
+    width: 222px;
+    height: 134px;
+    transform: translateY(50%); 
+    align-self: flex-end;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIiBmaWxsPSJibGFjayI+PGNpcmNsZSBjeD0iOSIgY3k9IjUiIHI9IjEiIGZpbGw9ImJsYWNrIi8+PC9zdmc+");
+    mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMjIiIGhlaWdodD0iMTM0IiB2aWV3Qm94PSIwIDAgMjIyIDEzNCIgZmlsbD0iYmxhY2siPgogICAgPHBhdGggZD0iTTIyMiAwQzExMSAwIDAgMCAwIDY3QzAgNjcgMCAxMzQgMjIyIDEzNCIvPgo8L3N2Zz4=") no-repeat center;    
+}
+
+.anim-glideAppear{
+    opacity: 0;
+    animation: glideAppear .5s ease-in-out forwards;
 }
