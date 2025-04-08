@@ -12,56 +12,64 @@
 
 	<div class="inline-grid items-start p-7">				
 		<div class="ml-4 w-96 h-96 border-[1px] border-b-4 border-jet-500 bg-cream rounded-2xl flex flex-col pt-8 font-Patua text-3xl shadow-[0px_5px_0px_0px_#35302C]">				
-			<div class="self-center"><span class="p-2 h-min inline-block -rotate-[9deg] border-2 border-jet bg-mauve-300 rounded-lg text-seasalt">bad</span> letters</div>			
+			<div class="self-center"><span class="p-2 h-min inline-block -rotate-[6deg] border-2 border-jet bg-mauve-300 rounded-lg text-seasalt">mauvaises</span> lettres</div>			
 			<div class="dots-filled grow flex flex-col">
-				<span class="p-4 absolute line-through max-w-96">{{ badLetters.join(' ') }}</span>				
+				<span class="p-4 absolute line-through max-w-96 font-Hepta">{{ badLetters.join(' ') }}</span>				
 			</div>						
 		</div>
 	</div>
 
-	<div class="inline-grid flex-col items-center" >
-		<help-screen v-if='this.help == true'>
-			<template v-slot:good>
-			<letter-tile class="tile goodLetter darker" disabled></letter-tile>
-			</template>
-			<template v-slot:almost>
-			<letter-tile class="tile wrgPlaceLetter darker" disabled></letter-tile>
-			</template>
-			<template v-slot:bad>
-			<letter-tile class="tile badLetter darker" disabled></letter-tile>
-			</template>				
-		</help-screen>
-
+	<div class="inline-grid items-center" >
 		<!-- GAME TILES -->
 		<div class='p-5 inline-flex justify-evenly w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
-			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1] : ''"></letter-tile>				
+			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>				
 		</div>	
 		<end-screen v-if='win!=null && closed == false'></end-screen>							
 	</div>
+
+	<!-- RULES CARDS -->
+	 <aside class="inline-grid">
+		<help-menu>
+			<template #good>
+				Lettres bien placées
+			</template>
+			<template #almost>
+				Lettres mal placées
+			</template>
+			<template #bad>
+				Mauvaises lettres
+			</template>
+		</help-menu>
+	 </aside>
+	 
+
 </main>
 
 <!-- DONUT -->
 <div class="w-96 h-96 bg-mauve-700 rounded-full absolute left-10 -top-52 -z-30 shadow-[5px_5px_0px_0px_#fffdc2]">
 	<div class="w-64 h-64 bg-seasalt rounded-full -z-20 relative left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 shadow-[inset_5px_5px_0px_0px_#fffdc2]"></div>
 </div>
-<!-- CIRCLE -->
-<div class="w-96 h-96 bg-cream rounded-full absolute -bottom-28 -left-28 -z-20"></div>
-<!-- TRIANGLE -->
-<div class="w-0 h-0 absolute right-32 top-1/2 -translate-y-1/2 border-[20rem] border-[transparent_transparent_#adf8db_transparent] scale-x-50 scale-y-150 -rotate-90 -z-20"></div>
+<!-- CIRCLES -->
+<div class="w-80 h-80 bg-cream rounded-full absolute -bottom-20 -left-20 -z-20"></div>
+<div class="w-[20.5rem] h-[20.5rem] bg-pastelcyan rounded-full absolute -bottom-20 -left-20 -z-30"></div>
+<!-- TRIANGLES -->
+<div class="w-0 h-0 absolute right-52 top-1/2 -translate-y-1/2 border-[20rem] border-[transparent_transparent_#adf8db_transparent] scale-x-50 scale-y-[2] -rotate-90 -z-20"></div>
+<div class="w-0 h-0 absolute right-60 top-1/2 -translate-y-1/2 border-[20rem] border-[transparent_transparent_#edbeff_transparent] scale-x-50 scale-y-[2] -rotate-90 -z-30"></div>
 
 </template>
 
 <script>
 import endScreen from './endScreen.vue'
-import helpScreen from './helpScreen.vue'
+import helpMenu from './helpScreen.vue'
 import splashScreen from './splashScreen.vue'
 import tile from './tile.vue'
 import functions from '../functions'
 import seedrandom from 'seedrandom'
+import HelpScreen from './helpScreen.vue'
 export default{
     name: 'game',
     components: {
-        helpScreen,
+        helpMenu,
         splashScreen,
         tile,
         endScreen
@@ -83,7 +91,6 @@ export default{
 			retries: 6,
 			win: null,
 			closed:false,	
-			help:false,
 			showSplashScreen: true,
 			squareSize: 100,
 			nbCols: 0,
@@ -163,9 +170,6 @@ export default{
 				this.currentWord = []
 				element.parentElement.nextSibling.children[0].focus()
 			}
-		},
-		helpPopup: function(){
-			this.help = true
 		},
 		summaryToTxt: function(sum){
 			let txtSum = []
@@ -258,7 +262,7 @@ export default{
 	components: {
 		'letter-tile': tile,
 		'end-screen': endScreen,
-		'help-screen': helpScreen,
+		'help-menu': helpMenu,
 		'splash-screen': splashScreen,
 	},
 	watch:{

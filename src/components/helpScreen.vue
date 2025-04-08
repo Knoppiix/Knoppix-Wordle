@@ -1,11 +1,14 @@
-<template>
-	<div class="absolute border-almond-100 bg-almond-300 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 animate-appear-in">
-		<span class="cross" @click="this.root.help = false">×</span>
-		<h1>How to play</h1>					
-		<ul id='rules'> 
-			<li><slot name="good"></slot>Blue tiles are well placed letters</li>
-			<li><slot name="almost"></slot>Pale yellow tiles are bad placed letters</li>
-			<li><slot name="bad"></slot>Red tiles are bad letters</li>
-		</ul>											
+<script setup>
+	import tile from './tile.vue'
+	const tileStates=["good","almost","bad"]
+	const tileColors=["bg-pastelcyan", "bg-cream", "bg-seasalt"]
+</script>
+
+<template>		
+	<div v-for="x in 3" class="w-96 h-28 bg-seasalt p-3 self-center justify-self-center border-[1px] flex items-center shadow-[3px_3px_rgba(0,0,0,.6)]">
+			<tile :class="'!'+tileColors[x-1]"></tile>
+			<span class="grow p-3 font-Hepta text-xl text-center">
+				<slot :name="tileStates[x-1]" />
+			</span>
 	</div>
 </template>

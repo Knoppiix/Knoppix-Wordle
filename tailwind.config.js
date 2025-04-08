@@ -25,7 +25,8 @@ export default {
       'seasalt': { DEFAULT: '#f8f7f7', 100: '#352e2e', 200: '#6a5c5c', 300: '#9c8d8d', 400: '#cac2c2', 500: '#f8f7f7', 600: '#f9f8f8', 700: '#fbfafa', 800: '#fcfcfc', 900: '#fefdfd' }
     },    
     fontFamily: {
-      Patua: ["Patua One", "serif"]
+      Patua: ["Patua One"],
+      Hepta: ["Hepta Slab"]
     }
   },
   plugins: [],
