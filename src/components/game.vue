@@ -27,7 +27,7 @@
 		<end-screen v-if='win!=null && closed == false'></end-screen>							
 	</div>
 
-	<!-- RULES CARDS -->
+	<!-- RULE CARDS -->
 	 <aside class="inline-grid">
 		<help-menu>
 			<template #good>
@@ -65,7 +65,6 @@ import splashScreen from './splashScreen.vue'
 import tile from './tile.vue'
 import functions from '../functions'
 import seedrandom from 'seedrandom'
-import HelpScreen from './helpScreen.vue'
 export default{
     name: 'game',
     components: {
@@ -127,8 +126,7 @@ export default{
 									this.tileState[i] = "!bg-pastelcyan animate-bounce-once" //bonne lettre
 									this.comparaison[i-lineIndexStart] = " "
 									this.emojiSummary[i] = String.fromCodePoint(128998)
-									this.goodLetters.push(this.currentWord[i])
-									//console.log(this.comparaison + " " + lineIndexStart)
+									this.goodLetters.push(this.currentWord[i])									
 									for (var y = 0; y < this.comparaison.length; y++) {
 										if(this.comparaison[y] != " " && !this.revealWord[y])
 											this.revealWord[y] = ''
@@ -140,8 +138,7 @@ export default{
 							case 1: //Check des lettres mal placees ou mauvaises								 
 									if(this.comparaison.includes(this.currentWord[i])  && this.tileState[i] == null){
 										this.tileState[i] = "!bg-cream animate-bounce-once" //mal placee
-										this.comparaison[i] = " "
-										//this.comparaison = this.comparaison.replace(this.currentWord[i], " ")
+										this.comparaison[i] = " "										
 										this.emojiSummary[i] = String.fromCodePoint(128999)								
 									}
 									else if(this.tileState[i] == null){ //Pour ne pas ecraser les bonnes lettres 
@@ -166,7 +163,6 @@ export default{
 					this.win = false
 					this.setCookie("input", btoa(this.userWords.join('/')))
 				}				
-				//console.log(this.userWords)
 				this.currentWord = []
 				element.parentElement.nextSibling.children[0].focus()
 			}
@@ -231,13 +227,12 @@ export default{
 			let expires = "expires="+ d.toString()
 			document.cookie = `${name}=${value}; ${expires}; path=/;`
 		},
-		wordConfirm(event, index, line){	// Fonction qui verifie si la touche enfoncee est bien la touche entree		    
-			if(event.key === "Enter"){
-				this.checkLine(index,line,event.target,true)
-			}
-		},
-		drawGrid(event){	
-				
+		// wordConfirm(event, index, line){	// Fonction qui verifie si la touche enfoncee est bien la touche entree		    
+		// 	if(event.key === "Enter"){
+		// 		this.checkLine(index,line,event.target,true)
+		// 	}
+		// },
+		drawGrid(){					
 			console.log(Date.now(), this.gridTemplateStyle)				
 			this.nbCols = Math.round(window.innerWidth / this.squareSize) + 1;
 			this.nbRows = Math.round(window.innerHeight / this.squareSize) + 1;			
@@ -245,9 +240,9 @@ export default{
 		},
 		getRotationClass(line, index) {
 			if (line % 2 === 0) {
-			return index % 2 === 0 ? 'rotate-[7deg]' : '-rotate-[7deg]';
+				return index % 2 === 0 ? 'rotate-[7deg]' : '-rotate-[7deg]';
 			} else {
-			return index % 2 === 0 ? '-rotate-[7deg]' : 'rotate-[7deg]';
+				return index % 2 === 0 ? '-rotate-[7deg]' : 'rotate-[7deg]';
 			}
   		},
 		eraseTile(event){		
@@ -267,7 +262,7 @@ export default{
 	},
 	watch:{
 		win(){
-			if(document.cookie.includes("won")){ //On ne veut pas re-executer la fonction win si le jouer a deja gagne (sinon ca fait tout buger)
+			if(document.cookie.includes("won")){ // On ne veut pas re-executer la fonction win si le jouer a deja gagne (sinon ca fait tout buger)
 				return 0
 			}
 			let y = 0
@@ -279,8 +274,7 @@ export default{
 			}
 			const d = new Date();
 			d.setDate(d.getDate()+1)
-			d.setHours(0,0,0)
-			let expires = "expires="+ d.toString()			
+			d.setHours(0,0,0)		
 			if(!document.cookie.includes("summary")){
 				this.setCookie("summary",this.summaryToTxt(this.emojiSummary))
 			}
