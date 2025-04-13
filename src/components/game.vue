@@ -22,13 +22,14 @@
 	<div class="inline-grid items-center" >
 		<!-- GAME TILES -->
 		<div class='p-5 inline-flex justify-evenly w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
-			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>				
+			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>							
 		</div>	
+		
 		<end-screen v-if='win!=null && closed == false'></end-screen>							
 	</div>
 
 	<!-- RULE CARDS -->
-	 <aside class="inline-grid">
+	 <aside class="flex flex-col justify-evenly">
 		<help-menu>
 			<template #good>
 				Lettres bien placées
@@ -65,6 +66,7 @@ import splashScreen from './splashScreen.vue'
 import tile from './tile.vue'
 import functions from '../functions'
 import seedrandom from 'seedrandom'
+import { ref } from 'vue'
 export default{
     name: 'game',
     components: {
@@ -95,6 +97,7 @@ export default{
 			nbCols: 0,
 		    nbRows: 0,
 			gridTemplateStyle: '',
+			checkIcon: null
 		}
 	},
 
@@ -113,58 +116,75 @@ export default{
 			const lineIndexStart = (line-1)*this.chosenWord.length	
 			this.currentWord[lineIndexStart+index-1] = element.value   
 			const userInput = this.currentWord.slice(lineIndexStart,lineIndexStart+this.chosenWord.length).join("")
-			console.log(this.currentWord)			
-			console.log(userInput.length == this.chosenWord.length,  this.checkList.includes(userInput), check==true)					
-			if(userInput.length == this.chosenWord.length && this.checkList.includes(userInput) && check==true){ // Si toutes les tiles de la lignes actuelles ont une valeur)
-				this.comparaison = this.chosenWord.split('') //Variable qui servira a comparer le mot de l'utilisateur au mot choisi par l'algo
-				this.lineNb++				
-				for(let steps = 0; steps < 2; steps++){ //2 etapes : Premierement on check les bonnes lettres, et deuxiemement on check les lettres mal placees + les mauvaises					
-					for(let i = lineIndexStart;  i < lineIndexStart+this.chosenWord.length; i++){ //On demarre une boucle au debut de la ligne actuelle jusqu'à sa fin																							
-						switch(steps){
-							case 0: //Check des bonnes lettres 								
-								if(this.currentWord[i] == this.chosenWord[i-lineIndexStart]){ //Si la lettre i de l'user equivaut à la lettre [i - index du debut de la ligne] du mot choisi
-									this.tileState[i] = "!bg-pastelcyan animate-bounce-once" //bonne lettre
-									this.comparaison[i-lineIndexStart] = " "
-									this.emojiSummary[i] = String.fromCodePoint(128998)
-									this.goodLetters.push(this.currentWord[i])									
-									for (var y = 0; y < this.comparaison.length; y++) {
-										if(this.comparaison[y] != " " && !this.revealWord[y])
-											this.revealWord[y] = ''
-										else
-											this.revealWord[y] = this.chosenWord[y]
-									}						
-								}
-								break
-							case 1: //Check des lettres mal placees ou mauvaises								 
-									if(this.comparaison.includes(this.currentWord[i])  && this.tileState[i] == null){
-										this.tileState[i] = "!bg-cream animate-bounce-once" //mal placee
-										this.comparaison[i] = " "										
-										this.emojiSummary[i] = String.fromCodePoint(128999)								
+			const currentLineElement = element.parentElement;
+			this.checkIcon.svg.style.top = currentLineElement.clientHeight/2;
+			this.checkIcon.svg.style.left = currentLineElement.clientWidth;		
+			this.checkIcon.svg.remove(); // On efface l'icone de validation		
+								
+			if(userInput.length == this.chosenWord.length && this.checkList.includes(userInput)){ // Si toutes les tiles de la lignes actuelles ont une valeur)
+				if(check==true){
+					this.comparaison = this.chosenWord.split('') //Variable qui servira a comparer le mot de l'utilisateur au mot choisi par l'algo
+					this.lineNb++				
+					for(let steps = 0; steps < 2; steps++){ //2 etapes : Premierement on check les bonnes lettres, et deuxiemement on check les lettres mal placees + les mauvaises					
+						for(let i = lineIndexStart;  i < lineIndexStart+this.chosenWord.length; i++){ //On demarre une boucle au debut de la ligne actuelle jusqu'à sa fin																							
+							switch(steps){
+								case 0: //Check des bonnes lettres 								
+									if(this.currentWord[i] == this.chosenWord[i-lineIndexStart]){ //Si la lettre i de l'user equivaut à la lettre [i - index du debut de la ligne] du mot choisi
+										this.tileState[i] = "!bg-pastelcyan animate-bounce-once" //bonne lettre
+										this.comparaison[i-lineIndexStart] = " "
+										this.emojiSummary[i] = String.fromCodePoint(128998)
+										this.goodLetters.push(this.currentWord[i])									
+										for (var y = 0; y < this.comparaison.length; y++) {
+											if(this.comparaison[y] != " " && !this.revealWord[y])
+												this.revealWord[y] = ''
+											else
+												this.revealWord[y] = this.chosenWord[y]
+										}						
 									}
-									else if(this.tileState[i] == null){ //Pour ne pas ecraser les bonnes lettres 
-										this.tileState[i] = "!bg-seasalt" //mauvaise lettre	
-										this.emojiSummary[i] = String.fromCodePoint(11035)
-										if(!this.chosenWord.includes(this.currentWord[i]) && !this.badLetters.includes(this.currentWord[i])){											//Si la lettre [i] n'est pas dans le mot choisi ET n'est pas déjà présente dans les lettres mauvaises
-											this.badLetters.push(this.currentWord[i])
+									break
+								case 1: //Check des lettres mal placees ou mauvaises								 
+										if(this.comparaison.includes(this.currentWord[i])  && this.tileState[i] == null){
+											this.tileState[i] = "!bg-cream animate-bounce-once" //mal placee
+											this.comparaison[i] = " "										
+											this.emojiSummary[i] = String.fromCodePoint(128999)								
 										}
-									}								
-								break
-						}							
-					}					
+										else if(this.tileState[i] == null){ //Pour ne pas ecraser les bonnes lettres 
+											this.tileState[i] = "!bg-seasalt" //mauvaise lettre	
+											this.emojiSummary[i] = String.fromCodePoint(11035)
+											if(!this.chosenWord.includes(this.currentWord[i]) && !this.badLetters.includes(this.currentWord[i])){											//Si la lettre [i] n'est pas dans le mot choisi ET n'est pas déjà présente dans les lettres mauvaises
+												this.badLetters.push(this.currentWord[i])
+											}
+										}								
+									break
+							}							
+						}					
+					}
+
+					this.userWords.push(this.currentWord.join(""))	
+					if(this.currentWord.join("") == this.chosenWord){
+						this.win = true
+						this.setCookie("input", btoa(this.userWords.join('/')))
+
+					}else if(this.lineNb == this.retries){
+						this.win = false
+						this.setCookie("input", btoa(this.userWords.join('/')))
+					}				
+					this.currentWord = []
+					element.parentElement.nextSibling.children[0].focus()
 				}
-
-				console.log(this.emojiSummary)
-				this.userWords.push(this.currentWord.join(""))	
-				if(this.currentWord.join("") == this.chosenWord){
-					this.win = true
-					this.setCookie("input", btoa(this.userWords.join('/')))
-
-				}else if(this.lineNb == this.retries){
-					this.win = false
-					this.setCookie("input", btoa(this.userWords.join('/')))
+				else{
+					this.svgToCheckmark();
+					currentLineElement.appendChild(this.checkIcon.createElement());										
 				}				
-				this.currentWord = []
-				element.parentElement.nextSibling.children[0].focus()
+			}else{ // Si le mot n'est pas correct OU ne fait pas 8 lettres
+				if(userInput.length == this.chosenWord.length){
+					// Si le mot fait 8 lettres mais n'est pas correct, afficher une croix pour l'indiquer à l'utilisateur
+					this.svgToCross();
+					currentLineElement.appendChild(this.checkIcon.createElement());					
+				}
+				// else{
+					
+				// }				
 			}
 		},
 		summaryToTxt: function(sum){
@@ -227,13 +247,7 @@ export default{
 			let expires = "expires="+ d.toString()
 			document.cookie = `${name}=${value}; ${expires}; path=/;`
 		},
-		// wordConfirm(event, index, line){	// Fonction qui verifie si la touche enfoncee est bien la touche entree		    
-		// 	if(event.key === "Enter"){
-		// 		this.checkLine(index,line,event.target,true)
-		// 	}
-		// },
-		drawGrid(){					
-			console.log(Date.now(), this.gridTemplateStyle)				
+		drawGrid(){								
 			this.nbCols = Math.round(window.innerWidth / this.squareSize) + 1;
 			this.nbRows = Math.round(window.innerHeight / this.squareSize) + 1;			
 			this.gridTemplateStyle = `grid-template-columns: repeat(${this.nbCols}, ${this.squareSize}px); grid-template-rows: repeat(${this.nbRows},${this.squareSize}px);`;			
@@ -252,6 +266,27 @@ export default{
 					previousSibling.focus()
 				} 
 			}
+		},
+		svgToCheckmark(){
+			// Create the SVG element			
+			this.checkIcon.svg.setAttribute("width", "64"); // Set width
+			this.checkIcon.svg.setAttribute("height", "64"); // Set height
+			this.checkIcon.svg.setAttribute("viewBox", "0 0 24 24"); // Define viewBox for scaling
+			this.checkIcon.svg.setAttribute("fill", "none"); // No fill for the SVG container			
+			this.checkIcon.svg.setAttribute("stroke", "none"); 
+
+			this.checkIcon.svg.style.position = "absolute";
+			this.checkIcon.svg.style.transform = "translateY(-50%)";
+
+			this.checkIcon.path.setAttribute("d", "m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z");		
+			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-pastelcyan"); // Stroke color
+			this.checkIcon.path.setAttribute("stroke-width", ".2");			
+			this.checkIcon.path.setAttribute("stroke-linecap", "round");
+			this.checkIcon.path.setAttribute("stroke-linejoin", "round");	
+		},
+		svgToCross(){
+			this.checkIcon.path.setAttribute("d", "M18.36 19.78L12 13.41l-6.36 6.37l-1.42-1.42L10.59 12L4.22 5.64l1.42-1.42L12 10.59l6.36-6.36l1.41 1.41L13.41 12l6.36 6.36z")
+			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-cream");
 		}
 	},	
 	components: {
@@ -306,10 +341,19 @@ export default{
 			this.chosenWord = word
 	    });
 
-		//
 		if(document.cookie.includes("input")){
 			this.setWords(atob(document.cookie.split("input")[1].split(';')[0].replace('=','')))
 		}		
+		
+		this.checkIcon = ref({
+			svg: document.createElementNS("http://www.w3.org/2000/svg", "svg" ),
+			path:  document.createElementNS("http://www.w3.org/2000/svg", "path"),
+			createElement: function(){
+				this.svg.appendChild(this.path);
+				return this.svg;
+			},
+		});
+		
 	},
 	
 }
