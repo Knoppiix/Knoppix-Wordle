@@ -181,10 +181,7 @@ export default{
 					// Si le mot fait 8 lettres mais n'est pas correct, afficher une croix pour l'indiquer à l'utilisateur
 					this.svgToCross();
 					currentLineElement.appendChild(this.checkIcon.createElement());					
-				}
-				// else{
-					
-				// }				
+				}				
 			}
 		},
 		summaryToTxt: function(sum){
@@ -267,24 +264,11 @@ export default{
 				} 
 			}
 		},
-		svgToCheckmark(){
-			// Create the SVG element			
-			this.checkIcon.svg.setAttribute("width", "64"); // Set width
-			this.checkIcon.svg.setAttribute("height", "64"); // Set height
-			this.checkIcon.svg.setAttribute("viewBox", "0 0 24 24"); // Define viewBox for scaling
-			this.checkIcon.svg.setAttribute("fill", "none"); // No fill for the SVG container			
-			this.checkIcon.svg.setAttribute("stroke", "none"); 
-
-			this.checkIcon.svg.style.position = "absolute";
-			this.checkIcon.svg.style.transform = "translateY(-50%)";
-
+		svgToCheckmark(){			
 			this.checkIcon.path.setAttribute("d", "m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z");		
 			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-pastelcyan"); // Stroke color
-			this.checkIcon.path.setAttribute("stroke-width", ".2");			
-			this.checkIcon.path.setAttribute("stroke-linecap", "round");
-			this.checkIcon.path.setAttribute("stroke-linejoin", "round");	
 		},
-		svgToCross(){
+		svgToCross(){		
 			this.checkIcon.path.setAttribute("d", "M18.36 19.78L12 13.41l-6.36 6.37l-1.42-1.42L10.59 12L4.22 5.64l1.42-1.42L12 10.59l6.36-6.36l1.41 1.41L13.41 12l6.36 6.36z")
 			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-cream");
 		}
@@ -353,7 +337,16 @@ export default{
 				return this.svg;
 			},
 		});
-		
+
+		this.checkIcon.svg.setAttribute("width", "64"); // Set width
+		this.checkIcon.svg.setAttribute("height", "64"); // Set height
+		this.checkIcon.svg.setAttribute("viewBox", "0 0 24 24"); // Define viewBox for scaling
+		this.checkIcon.svg.setAttribute("fill", "none"); // No fill for the SVG container			
+		this.checkIcon.svg.setAttribute("stroke", "none"); 
+
+		this.checkIcon.svg.style.position = "absolute";
+		this.checkIcon.svg.style.transform = "translateY(-50%)";
+		this.checkIcon.path.setAttribute("stroke-width", ".2");	
 	},
 	
 }
