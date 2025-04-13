@@ -4,24 +4,24 @@
 </div>
 
 <header  class="flex flex-row justify-center items-center">		
-	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center text-8xl p-10 text-shadow tracking-wider">KNORDLE</h1>
+	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center xl:text-8xl text-7xl p-10 text-shadow tracking-wider">KNORDLE</h1>
   	<!-- <span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span> -->
 </header>
 
-<main class="grid grid-cols-3">
+<main class="grid grid-cols-3 h-2/3">
 
 	<div class="inline-grid items-start p-7">				
-		<div class="ml-4 w-96 h-96 border-[1px] border-b-4 border-jet-500 bg-cream rounded-2xl flex flex-col pt-8 font-Patua text-3xl shadow-[0px_5px_0px_0px_#35302C]">				
-			<div class="self-center"><span class="p-2 h-min inline-block -rotate-[6deg] border-2 border-jet bg-mauve-300 rounded-lg text-seasalt">mauvaises</span> lettres</div>			
-			<div class="dots-filled grow flex flex-col">
-				<span class="p-4 absolute line-through max-w-96 font-Hepta">{{ badLetters.join(' ') }}</span>				
+		<div class="ml-4 w-72 h-72 xl:w-96 xl:h-96 border-[1px] border-b-4 border-jet-500 bg-cream rounded-2xl flex flex-col pt-8 font-Patua text-xl xl:text-3xl shadow-[0px_5px_0px_0px_#35302C]">				
+			<div class="self-center"><span class="xl:p-2 p-1 h-min inline-block -rotate-[6deg] border-2 border-jet bg-mauve-300 rounded-lg text-seasalt">mauvaises</span> lettres</div>			
+			<div class="dots-filled grow flex flex-col after:scale-75 after:translate-x-[12.5%] after:translate-y-1/4 after:xl:translate-y-1/2 after:xl:scale-100 after:xl:translate-x-0">
+				<span class="xl:p-4 p-1 absolute line-through xl:max-w-96 max-w-64 font-Hepta">{{ badLetters.join(' ') }}</span>				
 			</div>						
 		</div>
 	</div>
 
 	<div class="inline-grid items-center" >
 		<!-- GAME TILES -->
-		<div class='p-5 inline-flex justify-evenly w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
+		<div class='inline-flex justify-between w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
 			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>							
 		</div>	
 		

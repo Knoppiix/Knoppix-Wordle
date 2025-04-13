@@ -92,9 +92,10 @@
 
 .dots-filled::after{
     content: '';
+    padding:0;
+    margin:0;
     width: 222px;
-    height: 134px;
-    transform: translateY(50%); 
+    height: 134px;      
     align-self: flex-end;
     background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIiBmaWxsPSJibGFjayI+PGNpcmNsZSBjeD0iOSIgY3k9IjUiIHI9IjEiIGZpbGw9ImJsYWNrIi8+PC9zdmc+");
     mask: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMjIiIGhlaWdodD0iMTM0IiB2aWV3Qm94PSIwIDAgMjIyIDEzNCIgZmlsbD0iYmxhY2siPgogICAgPHBhdGggZD0iTTIyMiAwQzExMSAwIDAgMCAwIDY3QzAgNjcgMCAxMzQgMjIyIDEzNCIvPgo8L3N2Zz4=") no-repeat center;    
