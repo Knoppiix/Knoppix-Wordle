@@ -21,7 +21,7 @@
 
 	<div class="inline-grid items-center" >
 		<!-- GAME TILES -->
-		<div class='inline-flex justify-between w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
+		<div class='inline-flex justify-between xl:justify-around w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
 			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>							
 		</div>	
 		
