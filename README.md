@@ -1,4 +1,2 @@
 # New version in progress - UI remake
-
-## Mock-up preview : 
-![Desktop - 1](https://github.com/user-attachments/assets/59192f09-3c17-4f48-9a90-471c9009ab36)
+Try out the online demo there: http://149.202.35.66:5173
