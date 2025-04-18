@@ -1,13 +1,8 @@
 <template>
-	<div id='popup'>
-		<span class="cross" v-on:click="this.$root.closed = true">×</span>
-		<h1>{{this.$root.win == true ? 'You win' : 'You lose'}}</h1>
-		<h3 v-if="this.$root.win == false">{{'The word was '+ this.$root.chosenWord}}</h3>
-		<p id='summary' v-html='this.$root.emojiSummary.join("")'></p>	
-		<div>				
-			<a id="copyButton" onclick="copySummary(this)">
-				Copy
-			</a>
-		</div>				
+	<div class="absolute flex flex-col items-center xl:w-[29rem] w-96 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-mauve rounded-2xl border-2 border-jet-500 shadow-[4px_4px_0px_0px_#35302C]">		
+		<h1 class="font-Patua xl:text-4xl text-2xl xl:p-8 p-5"><slot name="title"></slot></h1>
+		<slot name="wordReveal">
+		</slot>		
+		<slot name="copyButton"></slot>		
 	</div>
 </template>

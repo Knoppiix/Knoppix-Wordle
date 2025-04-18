@@ -21,16 +21,16 @@ exports.readFile = async (file) => {
     return txt
 }
 
-exports.copySummary = (element) => {
-    // navigator clipboard api needs a secure context (https)
+exports.copySummary = (element, summary) => {
+    // navigator clipboard api needs a secure context (https)       
     if (navigator.clipboard && window.isSecureContext) {
         // navigator clipboard api method'
-        navigator.clipboard.writeText(document.querySelector("#popup > p").innerHTML.replaceAll("<br>","\n"));
-		element.innerText = "Copied!";
+        navigator.clipboard.writeText(summary);
+		element.innerText = "Copié!";
     } else {
         // text area method
         let textArea = document.createElement("textarea");
-        textArea.value = document.querySelector("#popup > p").innerHTML.replaceAll("<br>","\n");
+        textArea.value = summary;
         // make the textarea out of viewport
         textArea.style.position = "fixed";
         textArea.style.left = "-999999px";
@@ -38,7 +38,7 @@ exports.copySummary = (element) => {
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        element.innerText = "Copied!";
+        element.innerText = "Copié!";
         return new Promise((res, rej) => {
             // here the magic happens
             document.execCommand('copy') ? res() : rej();

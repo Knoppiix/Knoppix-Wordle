@@ -1,16 +1,16 @@
 <template>
-<div class="m-0 p-0 grid overflow-hidden h-full w-full gap-0 absolute -z-10" :style="this.gridTemplateStyle">
-	<div class="relative m-0 p-0 before:content-[''] after:content-[''] before:absolute after:absolute before:bg-[#000] after:bg-[#000] gridAnimate" v-for="square in Array.from({length: this.nbCols*this.nbRows})"></div>			
+<div class="m-0 p-0 grid overflow-hidden h-full w-full gap-0 absolute -z-10" :style="this.gridTemplateStyle" ref="gridContainer">
+	<div class="relative m-0 p-0 before:content-[''] after:content-[''] before:absolute after:absolute before:bg-[#000] after:bg-[#000] gridAnimate" v-for="square in gridSquares"></div>
 </div>
 
-<header  class="flex flex-row justify-center items-center">		
+<header  class="flex flex-row justify-center items-center">
 	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center xl:text-8xl text-7xl p-10 text-shadow tracking-wider">KNORDLE</h1>
   	<!-- <span class="col-start-3 justify-self-end mr-7 self-center p-2 text-[#B7AED5]" @click='helpPopup()'><p>help</p></span> -->
 </header>
 
 <main class="grid grid-cols-3 h-2/3">
 
-	<div class="inline-grid items-start p-7">				
+	<div class="inline-grid items-start p-7">
 		<div class="ml-4 w-72 h-72 xl:w-96 xl:h-96 border-[1px] border-b-4 border-jet-500 bg-cream rounded-2xl flex flex-col pt-8 font-Patua text-xl xl:text-3xl shadow-[0px_5px_0px_0px_#35302C]">				
 			<div class="self-center"><span class="xl:p-2 p-1 h-min inline-block -rotate-[6deg] border-2 border-jet bg-mauve-300 rounded-lg text-seasalt">mauvaises</span> lettres</div>			
 			<div class="dots-filled grow flex flex-col after:scale-75 after:translate-x-[12.5%] after:translate-y-1/4 after:xl:translate-y-1/2 after:xl:scale-100 after:xl:translate-x-0">
@@ -21,13 +21,11 @@
 
 	<div class="inline-grid items-center" >
 		<!-- GAME TILES -->
-		<div class='inline-flex justify-between xl:justify-around w-full anim-glideAppear' v-for="lines in retries" :key="lines" v-if="chosenWord" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
-			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>							
-		</div>	
-		
-		<end-screen v-if='win!=null && closed == false'></end-screen>							
+		<div class='inline-flex justify-between xl:justify-around w-full anim-glideAppear' v-for="lines in retries" :key="lines" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
+			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>
+		</div>
 	</div>
-
+	
 	<!-- RULE CARDS -->
 	 <aside class="flex flex-col justify-evenly">
 		<help-menu>
@@ -42,8 +40,6 @@
 			</template>
 		</help-menu>
 	 </aside>
-	 
-
 </main>
 
 <!-- DONUT -->
@@ -57,12 +53,34 @@
 <div class="w-0 h-0 absolute right-52 top-1/2 -translate-y-1/2 border-[20rem] border-[transparent_transparent_#adf8db_transparent] scale-x-50 scale-y-[2] -rotate-90 -z-20"></div>
 <div class="w-0 h-0 absolute right-60 top-1/2 -translate-y-1/2 border-[20rem] border-[transparent_transparent_#edbeff_transparent] scale-x-50 scale-y-[2] -rotate-90 -z-30"></div>
 
+<end-screen v-if='win != null'>
+	<template #title>
+		Tu as 
+		<span class="xl:p-2 p-1 h-min inline-block -rotate-[-6deg] border-2 border-jet rounded-lg" :class="win ? 'bg-pastelcyan-300' : 'bg-cream'">
+			{{ win ? 'gagné' : 'perdu' }}
+		</span>
+	</template>
+	<template #wordReveal>
+		<h3 v-if="!win" class="xl:text-xl text-lg p-2 font-Hepta">
+			Le mot était.. <span class="font-Patua xl:text-2xl text-xl">{{chosenWord}}</span>
+		</h3>
+		<h3 v-else class="xl:text-xl text-lg p-2 font-Hepta text-center">
+			Bien joué! Clique le bouton pour copier le résultat :)
+		</h3>
+	</template>
+	<template #copyButton>
+		<a class="xl:m-6 m-4 xl:p-3 p-2 xl:w-60 w-40 xl:text-xl text-md bg-cream border-[1px] shadow-[2px_2px_0px_0px_#35302C] rounded-sm font-Hepta text-center" @click="copySummary">
+			Copier le résultat
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="inline-block"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="#00000" d="M9.116 17q-.691 0-1.153-.462T7.5 15.385V4.615q0-.69.463-1.153T9.116 3h7.769q.69 0 1.153.462t.462 1.153v10.77q0 .69-.462 1.152T16.884 17zm0-1h7.769q.23 0 .423-.192t.192-.423V4.615q0-.23-.192-.423T16.884 4H9.116q-.231 0-.424.192t-.192.423v10.77q0 .23.192.423t.423.192m-3 4q-.69 0-1.153-.462T4.5 18.385V7.115q0-.213.143-.356T5 6.616t.357.143t.143.357v11.269q0 .23.192.423t.423.192h8.27q.213 0 .356.143t.143.357t-.143.357t-.357.143zM8.5 16V4z"/></svg>			
+		</a>					
+	</template>
+</end-screen>
+
 </template>
 
 <script>
 import endScreen from './endScreen.vue'
 import helpMenu from './helpScreen.vue'
-import splashScreen from './splashScreen.vue'
 import tile from './tile.vue'
 import functions from '../functions'
 import seedrandom from 'seedrandom'
@@ -71,11 +89,10 @@ export default{
     name: 'game',
     components: {
         helpMenu,
-        splashScreen,
-        tile,
-        endScreen
-    },
-    data() {
+		tile,
+		endScreen
+	},
+	data() {
 		return{
 			words:  [],
 			checkList: [],
@@ -92,12 +109,12 @@ export default{
 			retries: 6,
 			win: null,
 			closed:false,	
-			showSplashScreen: true,
 			squareSize: 100,
 			nbCols: 0,
 		    nbRows: 0,
 			gridTemplateStyle: '',
-			checkIcon: null
+			checkIcon: null,
+			gridSquares: [],
 		}
 	},
 
@@ -109,6 +126,7 @@ export default{
 			this.words = await functions.readFile('./src/assets/wordleList.json')   
 			this.checkList = await functions.readFile('./src/assets/checkList.json')				
 			const random = Math.round(rng * this.words.length-1)
+			console.log(this.words[random]);
 			return this.words[random]			
 		},
 		checkLine: async function(index, line, element,check, event){
@@ -166,6 +184,7 @@ export default{
 						this.setCookie("input", btoa(this.userWords.join('/')))
 
 					}else if(this.lineNb == this.retries){
+						console.log("lose")
 						this.win = false
 						this.setCookie("input", btoa(this.userWords.join('/')))
 					}				
@@ -231,10 +250,11 @@ export default{
 			return null
 		},
 		setWords: function(words){ // Fonction qui va ecrire les mots retenus dans les tiles depuis les cookies
-			const tiles = document.getElementsByClassName("tile null")
+			const tiles = document.getElementsByTagName("input")
+			const tilesArray = Array.from(tiles)
 			words = words.replaceAll("/","")
 			for(let i=0; i<words.length; i++){
-    			tiles[i].value = words[i]
+				tilesArray[i].value = words[i]
 			}
 		},
 		setCookie(name,value){ // Fonction pour definir un cookie simplement
@@ -244,10 +264,20 @@ export default{
 			let expires = "expires="+ d.toString()
 			document.cookie = `${name}=${value}; ${expires}; path=/;`
 		},
-		drawGrid(){								
+		drawGrid(){
+			// Clear existing squares from the grid
+			this.gridSquares = [];
+			
+			// Calculate new dimensions
 			this.nbCols = Math.round(window.innerWidth / this.squareSize) + 1;
-			this.nbRows = Math.round(window.innerHeight / this.squareSize) + 1;			
-			this.gridTemplateStyle = `grid-template-columns: repeat(${this.nbCols}, ${this.squareSize}px); grid-template-rows: repeat(${this.nbRows},${this.squareSize}px);`;			
+			this.nbRows = Math.round(window.innerHeight / this.squareSize) + 1;
+			
+			this.gridTemplateStyle = `grid-template-columns: repeat(${this.nbCols}, ${this.squareSize}px); grid-template-rows: repeat(${this.nbRows},${this.squareSize}px);`;
+			
+			// Create new squares array after a brief delay to ensure DOM update
+			setTimeout(() => {
+				this.gridSquares = Array.from({length: this.nbCols * this.nbRows});
+			}, 10);
 		},
 		getRotationClass(line, index) {
 			if (line % 2 === 0) {
@@ -271,16 +301,32 @@ export default{
 		svgToCross(){		
 			this.checkIcon.path.setAttribute("d", "M18.36 19.78L12 13.41l-6.36 6.37l-1.42-1.42L10.59 12L4.22 5.64l1.42-1.42L12 10.59l6.36-6.36l1.41 1.41L13.41 12l6.36 6.36z")
 			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-cream");
-		}
-	},	
+		},
+		svgInit(){
+			this.checkIcon.svg.setAttribute("width", "64"); // Set width
+			this.checkIcon.svg.setAttribute("height", "64"); // Set height
+			this.checkIcon.svg.setAttribute("viewBox", "0 0 24 24"); // Define viewBox for scaling
+			this.checkIcon.svg.setAttribute("fill", "none"); // No fill for the SVG container			
+			this.checkIcon.svg.setAttribute("stroke", "none"); 
+
+			this.checkIcon.svg.style.position = "absolute";
+			this.checkIcon.svg.style.transform = "translateY(-50%)";
+			this.checkIcon.path.setAttribute("stroke-width", ".2");	
+		},
+		copySummary(event) {
+			let summary = this.emojiSummary.join('').replaceAll("<br>", "\n");
+			summary += "\n\nJoue à Knordle: " + window.location.href;
+			functions.copySummary(event.target, summary);
+		},
+	},
 	components: {
 		'letter-tile': tile,
 		'end-screen': endScreen,
-		'help-menu': helpMenu,
-		'splash-screen': splashScreen,
+		'help-menu': helpMenu,		
 	},
 	watch:{
 		win(){
+			console.log("win")
 			if(document.cookie.includes("won")){ // On ne veut pas re-executer la fonction win si le jouer a deja gagne (sinon ca fait tout buger)
 				return 0
 			}
@@ -315,7 +361,7 @@ export default{
 		}
 		if(document.cookie.includes("summary")){
 			this.emojiSummary = this.txtToSummary(atob(document.cookie.split("summary")[1].split(";")[0].replace("=","")))
-		}		
+		}	
 		window.addEventListener('resize', this.drawGrid);
 		this.drawGrid();
 	},
@@ -325,7 +371,7 @@ export default{
 			this.chosenWord = word
 	    });
 
-		if(document.cookie.includes("input")){
+		if(document.cookie.includes("input")){			
 			this.setWords(atob(document.cookie.split("input")[1].split(';')[0].replace('=','')))
 		}		
 		
@@ -337,16 +383,8 @@ export default{
 				return this.svg;
 			},
 		});
-
-		this.checkIcon.svg.setAttribute("width", "64"); // Set width
-		this.checkIcon.svg.setAttribute("height", "64"); // Set height
-		this.checkIcon.svg.setAttribute("viewBox", "0 0 24 24"); // Define viewBox for scaling
-		this.checkIcon.svg.setAttribute("fill", "none"); // No fill for the SVG container			
-		this.checkIcon.svg.setAttribute("stroke", "none"); 
-
-		this.checkIcon.svg.style.position = "absolute";
-		this.checkIcon.svg.style.transform = "translateY(-50%)";
-		this.checkIcon.path.setAttribute("stroke-width", ".2");	
+		this.svgInit(); // Set the default properties for the SVG icon
+		
 	},
 	
 }
