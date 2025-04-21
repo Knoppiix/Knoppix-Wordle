@@ -11,10 +11,15 @@ export default {
           '0%': {opacity: '0%'},
           '100%': {opacity: '100%'}
         },
+        appearFromBottom: {
+          '0%': {transform: 'translate(-50%, -100%)', opacity: '0%'},
+          '100%': {transform: 'translate(-50%, -50%)', opacity: '100%'}
+        },
     },
       animation: {
         'appear-in': 'appear .3s ease-in-out',
         'bounce-once': 'bounceOnce .7s cubic-bezier(0, 0, 0.65, 1.18) 1',
+        'appearFromBottom': 'appearFromBottom .5s ease-in-out forwards',        
       },
     },
     colors: {

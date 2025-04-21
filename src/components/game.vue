@@ -1,7 +1,11 @@
 <template>
+
+
 <div class="m-0 p-0 grid overflow-hidden h-full w-full gap-0 absolute -z-10" :style="this.gridTemplateStyle" ref="gridContainer">
 	<div class="relative m-0 p-0 before:content-[''] after:content-[''] before:absolute after:absolute before:bg-[#000] after:bg-[#000] gridAnimate" v-for="square in gridSquares"></div>
 </div>
+
+
 
 <header  class="flex flex-row justify-center items-center">
 	<h1 class="text-mauve font-Patua font-bold col-start-2 text-center xl:text-8xl text-7xl p-10 text-shadow tracking-wider">KNORDLE</h1>
@@ -21,7 +25,7 @@
 
 	<div class="inline-grid items-center" >
 		<!-- GAME TILES -->
-		<div class='inline-flex justify-between xl:justify-around w-full anim-glideAppear' v-for="lines in retries" :key="lines" :style="{ animationDelay: `${(lines-1) * 100}ms` }">
+		<div class='inline-flex justify-between xl:justify-around w-full anim-glideAppear' v-for="lines in retries" :key="lines" :style="{ animationDelay: `${(lines) * 100}ms` }">
 			<letter-tile :class="`${getRotationClass(lines, index)} ${getState(lines, index)}`" v-for="index in chosenWord.length" :key="index" @input="checkLine(index,lines,$event.target,false, event)" @keydown.backspace="eraseTile" @keydown.enter="checkLine(index,lines,$event.target, true, event)" :disabled="getState(lines,index) !== null || win != null" :placeholder="lines == lineNb+1 && !win ? revealWord[index-1]: ''"></letter-tile>
 		</div>
 	</div>
@@ -69,7 +73,7 @@
 		</h3>
 	</template>
 	<template #copyButton>
-		<a class="xl:m-6 m-4 xl:p-3 p-2 xl:w-60 w-40 xl:text-xl text-md bg-cream border-[1px] shadow-[2px_2px_0px_0px_#35302C] rounded-sm font-Hepta text-center" @click="copySummary">
+		<a class="xl:m-6 m-4 xl:p-3 p-2 xl:w-60 w-40 xl:text-xl text-md bg-cream border-[1px] shadow-[3px_3px_0px_0px_#35302C] rounded-sm font-Hepta text-center transition-all hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]" @click="copySummary">
 			Copier le résultat
 			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="inline-block"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="#00000" d="M9.116 17q-.691 0-1.153-.462T7.5 15.385V4.615q0-.69.463-1.153T9.116 3h7.769q.69 0 1.153.462t.462 1.153v10.77q0 .69-.462 1.152T16.884 17zm0-1h7.769q.23 0 .423-.192t.192-.423V4.615q0-.23-.192-.423T16.884 4H9.116q-.231 0-.424.192t-.192.423v10.77q0 .23.192.423t.423.192m-3 4q-.69 0-1.153-.462T4.5 18.385V7.115q0-.213.143-.356T5 6.616t.357.143t.143.357v11.269q0 .23.192.423t.423.192h8.27q.213 0 .356.143t.143.357t-.143.357t-.357.143zM8.5 16V4z"/></svg>			
 		</a>					
@@ -274,7 +278,7 @@ export default{
 			
 			this.gridTemplateStyle = `grid-template-columns: repeat(${this.nbCols}, ${this.squareSize}px); grid-template-rows: repeat(${this.nbRows},${this.squareSize}px);`;
 			
-			// Create new squares array after a brief delay to ensure DOM update
+			// Générer la grille après 10ms pour éviter les bugs visuels
 			setTimeout(() => {
 				this.gridSquares = Array.from({length: this.nbCols * this.nbRows});
 			}, 10);
@@ -294,19 +298,19 @@ export default{
 				} 
 			}
 		},
-		svgToCheckmark(){			
-			this.checkIcon.path.setAttribute("d", "m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z");		
-			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-pastelcyan"); // Stroke color
+		svgToCheckmark(){
+			this.checkIcon.path.setAttribute("d", "m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z");
+			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-pastelcyan");
 		},
-		svgToCross(){		
+		svgToCross(){
 			this.checkIcon.path.setAttribute("d", "M18.36 19.78L12 13.41l-6.36 6.37l-1.42-1.42L10.59 12L4.22 5.64l1.42-1.42L12 10.59l6.36-6.36l1.41 1.41L13.41 12l6.36 6.36z")
 			this.checkIcon.path.setAttribute("class", "stroke-jet-100 fill-cream");
 		},
 		svgInit(){
-			this.checkIcon.svg.setAttribute("width", "64"); // Set width
-			this.checkIcon.svg.setAttribute("height", "64"); // Set height
-			this.checkIcon.svg.setAttribute("viewBox", "0 0 24 24"); // Define viewBox for scaling
-			this.checkIcon.svg.setAttribute("fill", "none"); // No fill for the SVG container			
+			this.checkIcon.svg.setAttribute("width", "64"); 
+			this.checkIcon.svg.setAttribute("height", "64"); 
+			this.checkIcon.svg.setAttribute("viewBox", "0 0 24 24"); 
+			this.checkIcon.svg.setAttribute("fill", "none"); 
 			this.checkIcon.svg.setAttribute("stroke", "none"); 
 
 			this.checkIcon.svg.style.position = "absolute";
@@ -332,7 +336,7 @@ export default{
 			}
 			let y = 0
 			for (var i = 1; i < this.emojiSummary.length; i++) {
-				if(i % this.chosenWord.length == 0){ //Si i est un multiple de (8)
+				if(i % this.chosenWord.length == 0){ // Si i est un multiple de (8)
 					this.emojiSummary.splice(i+y,0,"<br>")
 					y++
 				}
@@ -383,7 +387,7 @@ export default{
 				return this.svg;
 			},
 		});
-		this.svgInit(); // Set the default properties for the SVG icon
+		this.svgInit();
 		
 	},
 	
