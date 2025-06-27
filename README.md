@@ -1,2 +1,2 @@
 # New version in progress - UI remake
-Try out the online demo there: http://149.202.35.66:5173
+Try out the online demo at http://wordle.knpx.fr
